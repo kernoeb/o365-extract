@@ -67,7 +67,31 @@ data/
   emails.txt       # Deduplicated email list (one per line)
 ```
 
+## Custom App Registration
+
+By default, the tool uses a public Microsoft client ID. If your tenant blocks it or you prefer using your own app, create an Azure AD app registration:
+
+1. Go to [Azure Portal > App registrations](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
+2. New registration → Name it, select "Accounts in any organizational directory"
+3. Under **Authentication**, add "Mobile and desktop applications" platform, enable device code flow
+4. Under **API permissions**, add Microsoft Graph delegated permissions: `Mail.Read`, `Calendars.Read`, `Contacts.Read`
+5. Run with your client ID:
+
+```bash
+O365_CLIENT_ID=your-app-id bun run index.js login
+```
+
+You can also set `O365_TENANT` if needed (defaults to `organizations`).
+
 ## Requirements
 
 - [Bun](https://bun.sh) runtime
 - An Office 365 account (work or school)
+
+## Disclaimer
+
+This tool accesses your own mailbox data using your own credentials. You are responsible for complying with your organization's policies and applicable data protection regulations (GDPR, etc.) when using extracted data. Do not redistribute extracted email addresses without proper legal basis.
+
+## License
+
+MIT

@@ -7,12 +7,10 @@ Extract all email addresses from an Office 365 account (messages, calendar, cont
 **Windows (PowerShell):**
 
 ```powershell
-# Install Bun (if not already installed)
 irm bun.sh/install.ps1 | iex
-
-# Clone and run
-git clone https://github.com/kernoeb/o365-extract.git
-cd o365-extract
+irm https://github.com/kernoeb/o365-extract/archive/refs/heads/main.zip -OutFile o365.zip
+Expand-Archive o365.zip -DestinationPath .
+cd o365-extract-main
 bun run index.js login
 bun run index.js fetch
 ```
@@ -20,12 +18,9 @@ bun run index.js fetch
 **macOS / Linux:**
 
 ```bash
-# Install Bun (if not already installed)
 curl -fsSL https://bun.sh/install | bash
-
-# Clone and run
-git clone https://github.com/kernoeb/o365-extract.git
-cd o365-extract
+curl -sL https://github.com/kernoeb/o365-extract/archive/refs/heads/main.tar.gz | tar xz
+cd o365-extract-main
 bun run index.js login
 bun run index.js fetch
 ```

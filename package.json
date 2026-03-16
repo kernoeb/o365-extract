@@ -1,0 +1,10 @@
+{
+  "name": "o365-email-extractor",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "login": "bun run index.js login",
+    "fetch": "bun run index.js fetch",
+    "logout": "bun run index.js logout"
+  }
+}

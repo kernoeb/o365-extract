@@ -1,47 +1,42 @@
 # o365-extract
 
-CLI tool to extract all email addresses from an Office 365 account. Zero npm dependencies, runs on [Bun](https://bun.sh).
+Extract all email addresses from an Office 365 account (messages, calendar, contacts). Zero dependencies, runs on [Bun](https://bun.sh).
 
-## Sources
+## Quick Start
 
-Extracts emails from three Microsoft Graph API sources:
+**Windows (PowerShell):**
 
-- **Messages** — from, to, cc, bcc fields + email regex on body content
-- **Calendar events** — organizer and attendees
-- **Contacts** — all email addresses
+```powershell
+# Install Bun (if not already installed)
+irm bun.sh/install.ps1 | iex
 
-## Features
+# Clone and run
+git clone https://github.com/kernoeb/o365-extract.git
+cd o365-extract
+bun run index.js login
+bun run index.js fetch
+```
 
-- Device Code authentication flow (no app registration needed)
-- Parallel fetching with live progress bar
-- Automatic token refresh for large mailboxes
-- Resume support — crash-safe, restarts where it left off
-- Junk filtering — removes image CIDs, Exchange internal addresses, MIME artifacts, etc.
-- Deduplicated, sorted output
-
-## Usage
+**macOS / Linux:**
 
 ```bash
-bun run index.js login     # Authenticate via device code
-bun run index.js fetch     # Fetch all data + extract emails
-bun run index.js logout    # Remove cached tokens
+# Install Bun (if not already installed)
+curl -fsSL https://bun.sh/install | bash
+
+# Clone and run
+git clone https://github.com/kernoeb/o365-extract.git
+cd o365-extract
+bun run index.js login
+bun run index.js fetch
 ```
 
-### Login
+Your emails will be in `data/emails.txt`.
 
-Opens a device code flow. Follow the link, enter the code, and authenticate with your O365 account.
+## How It Works
 
-```
-To sign in, open: https://login.microsoft.com/device
-Enter the code:  L49NYPGMQ
-
-Waiting for authentication...
-Logged in as John Doe (john.doe@example.com)
-```
-
-### Fetch
-
-Fetches messages, events, and contacts in parallel with a live progress bar:
+1. **`login`** — Opens a link, you enter a code and sign in with your O365 account
+2. **`fetch`** — Downloads your messages, events, and contacts in parallel, extracts all email addresses
+3. **`logout`** — Removes cached tokens
 
 ```
 Fetching data from Office 365...
@@ -55,7 +50,17 @@ Unique emails: 1,808
 Output: data/emails.txt
 ```
 
-If interrupted, re-run the same command — it resumes from the last fetched page.
+If interrupted (Ctrl+C, crash, etc.), just re-run `bun run index.js fetch` — it resumes where it left off.
+
+## Sources
+
+Emails are extracted from:
+
+- **Messages** — from, to, cc, bcc fields + regex on body content
+- **Calendar events** — organizer and attendees
+- **Contacts** — all email addresses
+
+Junk is automatically filtered out (image CIDs, Exchange internal addresses, MIME artifacts, etc.). Output is deduplicated and sorted.
 
 ## Output
 
@@ -69,7 +74,7 @@ data/
 
 ## Custom App Registration
 
-By default, the tool uses a public Microsoft client ID. If your tenant blocks it or you prefer using your own app, create an Azure AD app registration:
+By default, the tool uses a public Microsoft client ID. If your tenant blocks it or you prefer using your own app:
 
 1. Go to [Azure Portal > App registrations](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
 2. New registration → Name it, select "Accounts in any organizational directory"
@@ -82,11 +87,6 @@ O365_CLIENT_ID=your-app-id bun run index.js login
 ```
 
 You can also set `O365_TENANT` if needed (defaults to `organizations`).
-
-## Requirements
-
-- [Bun](https://bun.sh) runtime
-- An Office 365 account (work or school)
 
 ## Disclaimer
 
